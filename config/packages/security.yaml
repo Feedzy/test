@@ -1,0 +1,44 @@
+security:
+    hide_user_not_found: false
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+            cost : 13
+    providers:
+        # in_memory: { memory: ~ }
+        database_users:
+            entity: { class: App\Entity\User, property: username }
+ 
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            pattern: ^/
+            form_login:
+                login_path: connexion
+                check_path: connexion
+                # Securisation des formulaires
+                #csrf_token_generator: security.csrf.token_manager
+                # La page par defaut apres une connexion reussie
+                default_target_path: admin
+
+            logout:
+                path: /logout
+                target: /connexion
+            # activate different ways to authenticate
+ 
+            # http_basic: true
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+ 
+            # form_login: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
+ #Symfony 4 - connexion à un espace admin #loginform #bdd
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
+        - { path: ^/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/profile, roles: ROLE_USER }
